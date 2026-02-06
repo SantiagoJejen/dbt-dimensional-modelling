@@ -1,5 +1,7 @@
 dbt-core==1.4.5
 dbt-postgres==1.4.5
 dbt-duckdb==1.4.1
+dbt-athena-community==1.4.2
+boto3>=1.26.0
 sqlfluff==2.0.4
 sqlfluff-templater-dbt==2.0.4

@@ -1,5 +1,5 @@
 adventureworks:
-  target: duckdb
+  target: athena
   outputs:
     duckdb:
      type: duckdb
@@ -14,3 +14,13 @@ adventureworks:
       dbname: adventureworks
       schema: dbo
       threads: 12
+    athena:
+      type: athena
+      database: adventureworks
+      region_name: us-east-1
+      schema: marts
+      s3_staging_dir: s3://dbt-adventureworks-silver-{{ env_var('AWS_ACCOUNT_ID', '115767846840') }}/dbt-athena/
+      s3_data_dir: s3://dbt-adventureworks-silver-{{ env_var('AWS_ACCOUNT_ID', '115767846840') }}/
+      s3_data_naming: table
+      threads: 4
+      work_group: primary
