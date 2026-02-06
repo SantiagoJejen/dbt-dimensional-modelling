@@ -6,7 +6,50 @@ Welcome to the tutorial on building a Kimball dimensional model with dbt.
 
 This tutorial is also featured on the [dbt developer blog](https://docs.getdbt.com/blog/kimball-dimensional-model).
 
-## Table of Contents 
+---
+
+## 🚀 **NUEVO: Versión AWS Athena (Completa y Lista)**
+
+**Para estudiantes:** Si quieres usar este proyecto con **AWS Athena** (serverless):
+
+### 🎯 Inicio Rápido (5 minutos)
+👉 **[START_HERE.md](START_HERE.md)** - Guía rápida + Checklist completo
+
+### 🔄 ¿Empezar desde Cero?
+👉 **[RESET_AND_START.md](RESET_AND_START.md)** - Guía completa para resetear todo
+
+### 📚 Documentación Completa
+👉 **[README_AWS.md](README_AWS.md)** - Tutorial detallado paso a paso
+
+### ⚡ Scripts de Automatización
+```bash
+# Iniciar desde cero (interactivo)
+./start_fresh.sh
+
+# Limpiar AWS rápidamente
+./clean_aws_quick.sh
+
+# O usa comandos Make
+make help                # Ver todos los comandos
+make clean-all          # Limpiar todo (local + AWS)
+make configure-aws      # Configurar credenciales
+make install            # Instalar dependencias
+make setup-aws          # Crear infraestructura
+make dbt-run            # Ejecutar modelos
+```
+
+**Características:**
+- ⚡ Setup automático con UV (10-100x más rápido que pip)
+- 🛠️ 25+ comandos Make para todo el flujo
+- ☁️ Integración completa con AWS S3 + Athena + Glue
+- � Parche automático para dbt-athena adapter
+- � 8 modelos dbt (5 dims + 1 fact + 1 obt)
+- ✅ 41/42 tests de calidad pasando
+- 📚 Perfecto para AWS Academy
+
+---
+
+## Table of Contents (Tutorial Original DuckDB/Postgres) 
 
 - [Part 0: Understand dimensional modelling concepts](#dimensional-modelling)
 - [Part 1: Set up a mock dbt project and database](docs/part01-setup-dbt-project.md)
