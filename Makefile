@@ -234,4 +234,8 @@ list-athena-tables: check-aws ## Listar tablas en Athena
 		--query 'QueryExecutionId' \
 		--output text | xargs -I {} sh -c 'sleep 3 && aws athena get-query-results --region $(AWS_REGION) --query-execution-id {} --query "ResultSet.Rows[*].Data[0].VarCharValue" --output text'
 
-.PHONY: help configure-aws install check-aws create-buckets upload-seeds create-athena-database create-athena-tables setup-aws dbt-debug dbt-run dbt-test dbt-docs-generate dbt-docs-serve verify list-s3 show-config clean-local clean-aws clean-all list-athena-tables
+student-report: ## Generar reporte de entrega (copia y pega la salida)
+	@echo "Generando reporte de entrega..."
+	@bash -c "$(VENV_ACTIVATE) python scripts/student_report.py"
+
+.PHONY: help configure-aws install check-aws create-buckets upload-seeds create-athena-database create-athena-tables setup-aws dbt-debug dbt-run dbt-test dbt-docs-generate dbt-docs-serve verify list-s3 show-config clean-local clean-aws clean-all list-athena-tables student-report
