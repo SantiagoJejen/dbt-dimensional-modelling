@@ -1,23 +1,23 @@
 with stg_customer as (
     select
         customerid,
-        personid,
+        try_cast(personid as bigint) as personid,
         storeid
-    from {{ ref('customer') }}
+    from {{ source('raw', 'customer') }}
 ),
 
 stg_person as (
     select
         businessentityid,
         concat(coalesce(firstname, ''), ' ', coalesce(middlename, ''), ' ', coalesce(lastname, '')) as fullname
-    from {{ ref('person') }}
+    from {{ source('raw', 'person') }}
 ),
 
 stg_store as (
     select
         businessentityid as storebusinessentityid,
         storename
-    from {{ ref('store') }}
+    from {{ source('raw', 'store') }}
 )
 
 select

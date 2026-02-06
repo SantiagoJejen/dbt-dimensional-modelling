@@ -1,0 +1,44 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Tablas raw en Athena desde S3 seeds"
+    schema: adventureworks
+    tables:
+      # Date tables
+      - name: date
+        description: "Tabla de fechas"
+      
+      # Person tables
+      - name: address
+        description: "Direcciones"
+      - name: countryregion
+        description: "Países y regiones"
+      - name: person
+        description: "Información de personas"
+      - name: stateprovince
+        description: "Estados y provincias"
+      
+      # Production tables
+      - name: product
+        description: "Productos"
+      - name: productcategory
+        description: "Categorías de productos"
+      - name: productsubcategory
+        description: "Subcategorías de productos"
+      
+      # Sales tables
+      - name: creditcard
+        description: "Tarjetas de crédito"
+      - name: customer
+        description: "Clientes"
+      - name: salesorderdetail
+        description: "Detalle de órdenes de venta"
+      - name: salesorderheader
+        description: "Encabezado de órdenes de venta"
+      - name: salesorderheadersalesreason
+        description: "Razones de venta"
+      - name: salesreason
+        description: "Catálogo de razones de venta"
+      - name: store
+        description: "Tiendas"

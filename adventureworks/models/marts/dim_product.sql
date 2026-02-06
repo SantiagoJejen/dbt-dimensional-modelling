@@ -1,16 +1,27 @@
 with stg_product as (
-    select *
-    from {{ ref('product') }}
+    select 
+        productid,
+        cast(name as varchar) as name,
+        productnumber,
+        color,
+        class,
+        try_cast(productsubcategoryid as bigint) as productsubcategoryid
+    from {{ source('raw', 'product') }}
 ),
 
 stg_product_subcategory as (
-    select *
-    from {{ ref('productsubcategory') }}
+    select 
+        productsubcategoryid,
+        productcategoryid,
+        cast(name as varchar) as name
+    from {{ source('raw', 'productsubcategory') }}
 ),
 
 stg_product_category as (
-    select *
-    from {{ ref('productcategory') }}
+    select
+        productcategoryid,
+        name
+    from {{ source('raw', 'productcategory') }}
 )
 
 select

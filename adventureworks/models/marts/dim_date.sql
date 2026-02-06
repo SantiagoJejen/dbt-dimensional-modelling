@@ -1,5 +1,5 @@
 with stg_date as (
-    select * from {{ ref('date') }}
+    select * from {{ source('raw', 'date') }}
 )
 
 select
