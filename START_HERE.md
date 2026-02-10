@@ -1,6 +1,6 @@
 # 🚀 Empieza Aquí - Guía Rápida + Checklist
 
-**Todo lo que necesitas para comenzar en 5 minutos**
+**Todo lo que necesitas para comenzar en 10 minutos**
 
 > ⚠️ **IMPORTANTE**: Este proyecto usa un parche para dbt-athena 1.4.2. Ver `ATHENA_ADAPTER_PATCH.md` para detalles.
 
@@ -15,25 +15,79 @@ Verifica que tengas esto antes de empezar:
 - [ ] Cuenta de AWS activa (AWS Academy o IAM User)
 - [ ] AWS CLI instalado: `aws --version`
 - [ ] Python 3.8+: `python3 --version`
-- [ ] Git para clonar el repo
+- [ ] Git instalado: `git --version`
 
 ---
 
-## ⚡ Setup Rápido (3 comandos)
+## 📥 Paso 0: Clonar el Repositorio
 
-### 1️⃣ Configurar AWS
+```bash
+# Clonar el repositorio
+git clone https://github.com/SantiagoJejen/dbt-dimensional-modelling.git
+
+# Entrar al directorio del proyecto
+cd dbt-dimensional-modelling
+```
+
+---
+
+## ⚡ Setup Rápido (Paso a Paso)
+
+---
+
+## ⚡ Setup Rápido (Paso a Paso)
+
+### 1️⃣ Configurar AWS CLI
 ```bash
 make configure-aws
 ```
 ✅ Ingresa tus credenciales (Access Key, Secret Key, Session Token si aplica)
 
-### 2️⃣ Instalar Todo con UV ⚡
+### 2️⃣ Crear Bucket S3 para Resultados de Athena
+
+⚠️ **IMPORTANTE**: Athena necesita un bucket S3 para guardar los resultados de las queries.
+
 ```bash
+# Crea el bucket (reemplaza ACCOUNT_ID con tu Account ID de AWS)
+# O usa este comando para obtener tu Account ID automáticamente:
+aws s3 mb s3://aws-athena-query-results-$(aws sts get-caller-identity --query Account --output text)-us-east-1
+```
+
+📌 **Configurar Athena Console**:
+1. Ve a: https://console.aws.amazon.com/athena/
+2. Click en "Settings" (Configuración)
+3. En "Query result location" ingresa: `s3://aws-athena-query-results-ACCOUNT_ID-us-east-1/`
+4. Click "Save"
+
+### 3️⃣ Instalar Dependencias con UV
+
+⚠️ **NOTA IMPORTANTE**: El primer `make install` NO activa el ambiente automáticamente.
+
+```bash
+# Primer comando: Instala UV y crea el ambiente
+make install
+
+# Activar el ambiente virtual manualmente
+source .venv/bin/activate
+
+# Segundo comando: Reinstala en el ambiente activado + aplica parche
 make install
 ```
-✅ Instala UV automáticamente + crea `.venv/` + instala deps + configura dbt + **aplica parche a dbt-athena**
 
-### 3️⃣ Crear Infraestructura AWS
+✅ Esto instala UV + crea `.venv/` + instala deps + **aplica parche a dbt-athena**
+
+### 4️⃣ Exportar Account ID (IMPORTANTE)
+
+Antes de ejecutar dbt, necesitas exportar tu Account ID como variable de entorno:
+
+```bash
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+# Verificar que se exportó correctamente:
+echo $AWS_ACCOUNT_ID
+```
+
+### 5️⃣ Crear Infraestructura AWS
 ```bash
 make setup-aws
 ```
@@ -41,10 +95,18 @@ make setup-aws
 
 ---
 
-## 🎯 Ejecutar Modelos (2 comandos)
+## 🎯 Ejecutar Modelos (Con Account ID Configurado)
+
+⚠️ **Asegúrate de haber exportado AWS_ACCOUNT_ID antes de continuar**
 
 ```bash
-# Ejecutar transformaciones dbt
+# Verificar que la variable esté configurada
+echo $AWS_ACCOUNT_ID
+
+# Si no muestra nada, ejecuta:
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+# Ahora sí, ejecutar transformaciones dbt
 make dbt-run
 
 # Ver documentación interactiva
@@ -54,31 +116,53 @@ make dbt-docs-serve
 
 ---
 
+## 📊 Generar Reporte de Entrega
+
+Cuando termines el proyecto, genera tu reporte:
+
+```bash
+make student-report
+```
+
+✅ Esto te mostrará tu puntuación y resultados de tests  
+✅ **Copia TODO el texto** y pégalo en la plataforma de entrega  
+✅ Tarda ~60 segundos (ejecuta los 42 tests de dbt)
+
+---
+
 ## ✅ Checklist Completo
 
 Marca cada paso mientras avanzas:
 
-### 🔧 Setup (Primera Vez)
-- [x] **1.** Ejecuté `make configure-aws` ✓
-- [x] **2.** Ejecuté `make install` ✓  
-- [x] **3.** Ejecuté `make setup-aws` ✓
-- [x] **4.** Ejecuté `make dbt-debug` (debe decir "OK connection ok")
+### � Preparación
+- [ ] **0.** Cloné el repositorio: `git clone https://github.com/SantiagoJejen/dbt-dimensional-modelling.git`
+- [ ] **0.1** Entré al directorio: `cd dbt-dimensional-modelling`
+
+### �🔧 Setup (Primera Vez)
+- [ ] **1.** Ejecuté `make configure-aws` ✓
+- [ ] **2.** Creé bucket S3 para Athena: `aws s3 mb s3://aws-athena-query-results-ACCOUNT_ID-us-east-1`
+- [ ] **3.** Configuré Athena Console con el bucket de resultados
+- [ ] **4.** Ejecuté `make install` (primera vez)
+- [ ] **5.** Activé el ambiente: `source .venv/bin/activate`
+- [ ] **6.** Ejecuté `make install` (segunda vez - aplica parche)
+- [ ] **7.** Exporté Account ID: `export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)`
+- [ ] **8.** Ejecuté `make setup-aws` ✓
+- [ ] **9.** Ejecuté `make dbt-debug` (debe decir "OK connection ok")
 
 ### 🎨 Transformaciones
-- [x] **5.** Ejecuté `make dbt-run` (crea dimensiones y hechos) ✓ 8 modelos OK
-- [ ] **6.** Ejecuté `make dbt-test` (valida datos)
-- [ ] **7.** Ejecuté `make verify` (verifica deployment)
-- [ ] **8.** Ejecuté `make dbt-docs-serve` (explora documentación)
+- [ ] **10.** Ejecuté `make dbt-run` (crea dimensiones y hechos) - Esperar 8 modelos OK
+- [ ] **11.** Ejecuté `make dbt-test` (valida datos) - 41/42 tests OK
+- [ ] **12.** Ejecuté `make dbt-docs-serve` (explora documentación)
 
 ### 📊 Consultar Datos
-- [ ] **9.** Abrí [AWS Athena Console](https://console.aws.amazon.com/athena/)
-- [ ] **10.** Vi la database `adventureworks` y schema `marts`
-- [ ] **11.** Ejecuté queries de ejemplo (ver abajo)
+- [ ] **13.** Abrí [AWS Athena Console](https://console.aws.amazon.com/athena/)
+- [ ] **14.** Vi la database `adventureworks` y schema `marts`
+- [ ] **15.** Ejecuté queries de ejemplo (ver abajo)
 
-### 🔍 Verificación
-- [ ] **12.** Ejecuté `make list-s3` (ver buckets)
-- [ ] **13.** Ejecuté `make show-config` (ver configuración)
-- [ ] **14.** Todo funciona sin errores ✨
+### � Entrega
+- [ ] **16.** Ejecuté `make student-report` y copié la salida completa
+- [ ] **17.** Pegué el reporte en la plataforma de entrega
+- [ ] **18.** Incluí mi nombre completo al enviarlo
 
 ---
 
@@ -92,6 +176,25 @@ Marca cada paso mientras avanzas:
 
 ### ❌ Error: mmh3 compilation failed en ARM
 ✅ **Solución**: Usa dbt-athena 1.4.2 (ya configurado en requirements.txt)
+
+### ❌ Error: "AWS_ACCOUNT_ID no encontrado" en dbt run
+✅ **Solución**: 
+```bash
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+echo $AWS_ACCOUNT_ID  # Verificar que se exportó
+```
+
+### ❌ Error: "No query results location" en Athena
+✅ **Solución**: Configura el bucket de resultados en Athena Console:
+1. Ve a Athena Console → Settings
+2. Query result location: `s3://aws-athena-query-results-ACCOUNT_ID-us-east-1/`
+
+### ❌ El ambiente virtual no se activa automáticamente
+✅ **Solución**: Después del primer `make install`, ejecuta manualmente:
+```bash
+source .venv/bin/activate
+make install  # Segunda vez para aplicar el parche
+```
 
 ---
 
@@ -132,15 +235,15 @@ LIMIT 10;
 |---------|----------|---------------|
 | `make help` | Muestra todos los comandos | Cuando no recuerdes algo |
 | `make configure-aws` | Configura credenciales | Primera vez o si expiran |
-| `make install` | Instala deps con UV | Primera vez o actualización |
+| `make install` | Instala deps con UV | Primera vez (ejecutar 2 veces) |
 | `make setup-aws` | Crea infraestructura | Primera vez en AWS |
-| `make dbt-run` | Ejecuta modelos | Cada cambio en SQL |
+| `make dbt-run` | Ejecuta modelos | Después de exportar AWS_ACCOUNT_ID |
 | `make dbt-test` | Ejecuta tests | Después de dbt-run |
+| `make student-report` | Genera reporte de entrega | Al finalizar el proyecto |
 | `make dbt-docs-serve` | Docs interactivas | Para explorar |
-| `make verify` | Diagnóstico completo | Si algo falla |
 | `make show-config` | Ver configuración | Para debug |
 | `make list-s3` | Ver buckets | Para debug |
-| `make clean-buckets` | Limpia todo | Al terminar |
+| `make clean-all` | Limpia todo (local+AWS) | Al terminar proyecto |
 
 ---
 
@@ -189,23 +292,61 @@ SELECT * FROM tabla LIMIT 10;
 
 ---
 
+## 🎓 Flujo de Trabajo Completo (Resumen)
+
+```bash
+# === SETUP INICIAL (Solo primera vez) ===
+git clone https://github.com/SantiagoJejen/dbt-dimensional-modelling.git
+cd dbt-dimensional-modelling
+
+make configure-aws
+aws s3 mb s3://aws-athena-query-results-$(aws sts get-caller-identity --query Account --output text)-us-east-1
+
+make install
+source .venv/bin/activate
+make install
+
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+make setup-aws
+
+# === EJECUTAR MODELOS ===
+make dbt-run
+make dbt-test
+
+# === GENERAR ENTREGA ===
+make student-report
+# Copiar y pegar la salida completa en la plataforma
+
+# === VER RESULTADOS ===
+make dbt-docs-serve  # http://localhost:8080
+# O ir a AWS Athena Console y ejecutar queries
+```
+
+---
+
 ## 🎓 Flujo de Trabajo Diario
 
-Una vez que hiciste el setup inicial, este es tu flujo diario:
+Si ya hiciste el setup inicial y solo quieres trabajar en el proyecto:
 
 ```bash
 # 1. Abrir terminal en el proyecto
 cd dbt-dimensional-modelling
 
-# 2. Ejecutar modelos (si cambiaste SQL)
+# 2. Activar ambiente (si no está activado)
+source .venv/bin/activate
+
+# 3. Exportar Account ID (si cambió la sesión)
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+# 4. Si cambian credenciales AWS (AWS Academy expira cada 3-4 horas)
+make configure-aws
+
+# 5. Ejecutar modelos (si cambiaste SQL)
 make dbt-run
 
-# 3. Ver resultados
+# 6. Ver resultados
 make dbt-docs-serve
 # o consultar en Athena Console
-
-# 4. Si cambian credenciales AWS (AWS Academy)
-make configure-aws
 ```
 
 ---
